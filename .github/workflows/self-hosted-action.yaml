@@ -1,0 +1,29 @@
+name: "Self Hosted Runner on AWS EC2 VM Instance"
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    spell-check:
+        runs-on: ubuntu-latest
+
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v2
+    
+          - name: Install Spell Checker
+            run: npm install -g cspell
+    
+          - name: Run Spell Checker
+            run: cspell README.md
+    
+          - name: Upload Spell Check Report
+            if: failure()
+            uses: actions/upload-artifact@v2
+            with:
+              name: spell-check-report
+              path: cspell*.txt
